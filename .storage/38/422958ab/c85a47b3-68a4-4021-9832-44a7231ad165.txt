@@ -1,0 +1,16 @@
+$ cd /workspace/shadcn-ui && pnpm i && pnpm run lint
+Lockfile is up to date, resolution step is skipped
+Packages: +438
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+.../node_modules/@swc/core postinstall$ node postinstall.js
+.../node_modules/@swc/core postinstall: Done
+.../esbuild@0.21.5/node_modules/esbuild postinstall$ node install.js
+.../esbuild@0.25.4/node_modules/esbuild postinstall$ node install.js
+.../esbuild@0.21.5/node_modules/esbuild postinstall: Done
+.../esbuild@0.25.4/node_modules/esbuild postinstall: Done
+
+Done in 2.3s
+
+> shadcnui@ lint /workspace/shadcn-ui
+> eslint --quiet ./src
+

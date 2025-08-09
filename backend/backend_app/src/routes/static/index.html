@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StyleMe Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .status-online { background-color: #10b981; }
+        .status-offline { background-color: #ef4444; }
+        .status-warning { background-color: #f59e0b; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-cut text-2xl mr-3"></i>
+                    <h1 class="text-xl font-bold">StyleMe Admin Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm">Welcome, Admin</span>
+                    <i class="fas fa-user-circle text-2xl"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Status Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white overflow-hidden shadow rounded-lg card-hover">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-server text-3xl text-blue-500"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Backend Status</dt>
+                                <dd class="flex items-center text-lg font-medium text-gray-900">
+                                    <span class="status-indicator status-online"></span>
+                                    <span id="backend-status">Online</span>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg card-hover">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-brain text-3xl text-purple-500"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">AI Services</dt>
+                                <dd class="flex items-center text-lg font-medium text-gray-900">
+                                    <span class="status-indicator status-warning"></span>
+                                    <span id="ai-status">Mock Mode</span>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg card-hover">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-users text-3xl text-green-500"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Total Users</dt>
+                                <dd class="text-lg font-medium text-gray-900" id="total-users">Loading...</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg card-hover">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-calendar-check text-3xl text-orange-500"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Total Bookings</dt>
+                                <dd class="text-lg font-medium text-gray-900" id="total-bookings">Loading...</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Sections -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- User Management Section -->
+            <div class="bg-white shadow rounded-lg">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                        <i class="fas fa-users mr-2 text-blue-500"></i>
+                        User Management
+                    </h3>
+                    <p class="text-sm text-gray-600 mt-1">Manage user accounts and permissions</p>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <button onclick="loadUsers()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-200">
+                            <i class="fas fa-list mr-2"></i>View All Users
+                        </button>
+                        <button onclick="showAddUserForm()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-200">
+                            <i class="fas fa-user-plus mr-2"></i>Add New User
+                        </button>
+                        <div id="user-list" class="mt-4 max-h-64 overflow-y-auto"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Services Section -->
+            <div class="bg-white shadow rounded-lg">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                        <i class="fas fa-brain mr-2 text-purple-500"></i>
+                        AI Services
+                    </h3>
+                    <p class="text-sm text-gray-600 mt-1">Monitor and test AI functionality</p>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <button onclick="checkAIHealth()" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded transition duration-200">
+                            <i class="fas fa-heartbeat mr-2"></i>Check AI Health
+                        </button>
+                        <button onclick="testFaceAnalysis()" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded transition duration-200">
+                            <i class="fas fa-search mr-2"></i>Test Face Analysis
+                        </button>
+                        <div id="ai-results" class="mt-4 p-3 bg-gray-50 rounded text-sm"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Management Section -->
+            <div class="bg-white shadow rounded-lg">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                        <i class="fas fa-calendar-check mr-2 text-green-500"></i>
+                        Booking Management
+                    </h3>
+                    <p class="text-sm text-gray-600 mt-1">View and manage salon bookings</p>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <button onclick="loadBookings()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-200">
+                            <i class="fas fa-list mr-2"></i>View All Bookings
+                        </button>
+                        <button onclick="loadPendingBookings()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded transition duration-200">
+                            <i class="fas fa-clock mr-2"></i>Pending Bookings
+                        </button>
+                        <div id="booking-list" class="mt-4 max-h-64 overflow-y-auto"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Information Section -->
+            <div class="bg-white shadow rounded-lg">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                        <i class="fas fa-info-circle mr-2 text-orange-500"></i>
+                        System Information
+                    </h3>
+                    <p class="text-sm text-gray-600 mt-1">System status and configuration</p>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-sm font-medium text-gray-600">Backend Version:</span>
+                            <span class="text-sm text-gray-900">1.0.0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm font-medium text-gray-600">Database:</span>
+                            <span class="text-sm text-gray-900">SQLite</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm font-medium text-gray-600">AI Models:</span>
+                            <span class="text-sm text-gray-900">Mock/Fallback</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm font-medium text-gray-600">CORS:</span>
+                            <span class="text-sm text-green-600">Enabled</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden">
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">Add New User</h3>
+                </div>
+                <div class="p-6">
+                    <form id="addUserForm">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                            <input type="text" id="username" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" id="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" onclick="closeAddUserModal()" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">Cancel</button>
+                            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Add User</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL
+        const API_BASE = window.location.origin;
+
+        // Load initial data
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+            checkAIHealth();
+        });
+
+        // Load basic statistics
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/api/users`);
+                if (response.ok) {
+                    const users = await response.json();
+                    document.getElementById('total-users').textContent = users.length || 0;
+                } else {
+                    document.getElementById('total-users').textContent = 'Error';
+                }
+            } catch (error) {
+                document.getElementById('total-users').textContent = 'Error';
+            }
+
+            // Mock booking count for now
+            document.getElementById('total-bookings').textContent = '0';
+        }
+
+        // Check AI service health
+        async function checkAIHealth() {
+            try {
+                const response = await fetch(`${API_BASE}/api/ai/health`);
+                const data = await response.json();
+                
+                const aiStatus = document.getElementById('ai-status');
+                const statusIndicator = aiStatus.previousElementSibling;
+                
+                if (data.deepface_available && data.hair_model_available) {
+                    aiStatus.textContent = 'Fully Online';
+                    statusIndicator.className = 'status-indicator status-online';
+                } else if (data.deepface_available || data.hair_model_available) {
+                    aiStatus.textContent = 'Partial';
+                    statusIndicator.className = 'status-indicator status-warning';
+                } else {
+                    aiStatus.textContent = 'Mock Mode';
+                    statusIndicator.className = 'status-indicator status-warning';
+                }
+
+                document.getElementById('ai-results').innerHTML = `
+                    <strong>AI Health Status:</strong><br>
+                    DeepFace: ${data.deepface_available ? '✅ Available' : '❌ Not Available'}<br>
+                    Hair Model: ${data.hair_model_available ? '✅ Available' : '❌ Not Available'}<br>
+                    Message: ${data.message}
+                `;
+            } catch (error) {
+                document.getElementById('ai-results').innerHTML = `<span class="text-red-600">Error checking AI health: ${error.message}</span>`;
+            }
+        }
+
+        // Load users
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${API_BASE}/api/users`);
+                const users = await response.json();
+                
+                const userList = document.getElementById('user-list');
+                if (users.length === 0) {
+                    userList.innerHTML = '<p class="text-gray-500 text-sm">No users found.</p>';
+                } else {
+                    userList.innerHTML = users.map(user => `
+                        <div class="flex justify-between items-center p-2 bg-gray-50 rounded mb-2">
+                            <div>
+                                <div class="font-medium text-sm">${user.username || 'N/A'}</div>
+                                <div class="text-xs text-gray-500">${user.email || 'N/A'}</div>
+                            </div>
+                            <button onclick="deleteUser(${user.id})" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                document.getElementById('user-list').innerHTML = `<p class="text-red-500 text-sm">Error loading users: ${error.message}</p>`;
+            }
+        }
+
+        // Show add user form
+        function showAddUserForm() {
+            document.getElementById('addUserModal').classList.remove('hidden');
+        }
+
+        // Close add user modal
+        function closeAddUserModal() {
+            document.getElementById('addUserModal').classList.add('hidden');
+            document.getElementById('addUserForm').reset();
+        }
+
+        // Add user form submission
+        document.getElementById('addUserForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/users`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, email })
+                });
+                
+                if (response.ok) {
+                    closeAddUserModal();
+                    loadUsers();
+                    loadStats();
+                    alert('User added successfully!');
+                } else {
+                    const error = await response.json();
+                    alert(`Error adding user: ${error.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                alert(`Error adding user: ${error.message}`);
+            }
+        });
+
+        // Delete user
+        async function deleteUser(userId) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                try {
+                    const response = await fetch(`${API_BASE}/api/users/${userId}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        loadUsers();
+                        loadStats();
+                        alert('User deleted successfully!');
+                    } else {
+                        const error = await response.json();
+                        alert(`Error deleting user: ${error.message || 'Unknown error'}`);
+                    }
+                } catch (error) {
+                    alert(`Error deleting user: ${error.message}`);
+                }
+            }
+        }
+
+        // Test face analysis
+        async function testFaceAnalysis() {
+            // Create a simple test image (1x1 pixel base64 image)
+            const testImage = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/ai/analyze_face`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ image: testImage })
+                });
+                
+                const data = await response.json();
+                document.getElementById('ai-results').innerHTML = `
+                    <strong>Face Analysis Test Result:</strong><br>
+                    <pre class="text-xs mt-2">${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('ai-results').innerHTML = `<span class="text-red-600">Error testing face analysis: ${error.message}</span>`;
+            }
+        }
+
+        // Load bookings (placeholder)
+        function loadBookings() {
+            document.getElementById('booking-list').innerHTML = '<p class="text-gray-500 text-sm">Booking system not yet implemented.</p>';
+        }
+
+        // Load pending bookings (placeholder)
+        function loadPendingBookings() {
+            document.getElementById('booking-list').innerHTML = '<p class="text-gray-500 text-sm">No pending bookings.</p>';
+        }
+    </script>
+</body>
+</html>
+

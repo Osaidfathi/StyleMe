@@ -1,0 +1,15 @@
+$ cd /workspace/shadcn-ui && cp /workspace/uploads/inbound1181259968803868950.jpg public/logo.jpg
+$ cd /workspace/shadcn-ui && pnpm run lint
+
+
+> shadcnui@ lint /workspace/shadcn-ui
+> eslint --quiet ./src
+
+
+/workspace/shadcn-ui/src/pages/Salons/SalonDetails.tsx
+  27:56  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  52:38  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 2 problems (2 errors, 0 warnings)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "backend/backend_app/src/main.py",
+      "use": "@vercel/python",
+      "config": { "maxLambdaSize": "15mb" }
+    },
+    {
+      "src": "workspace/shadcn-ui/package.json",
+      "use": "@vercel/node",
+      "config": { "outputDirectory": "dist" }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "backend/backend_app/src/main.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "workspace/shadcn-ui/dist/$1"
+    }
+  ]
+}
+

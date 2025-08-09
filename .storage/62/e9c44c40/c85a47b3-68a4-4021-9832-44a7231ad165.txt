@@ -1,0 +1,1 @@
+$ cd /workspace/shadcn-ui && cp /workspace/uploads/inbound1181259968803868950.jpg public/logo.jpg

@@ -1,0 +1,109 @@
+sequenceDiagram
+    participant U as User
+    participant F as Frontend
+    participant A as API
+    participant AI as AI Service
+    participant DB as Database
+    participant S3 as Storage
+    participant P as Payment
+    participant N as Notification
+
+    %% User Registration & Photo Upload
+    U->>F: Register/Login
+    F->>A: POST /api/auth/login
+    A->>DB: Create/Verify User
+    DB-->>A: User Data
+    A-->>F: Auth Token + User Profile
+
+    U->>F: Upload Photo for AI Processing
+    F->>A: POST /api/styles/generate
+    A->>S3: Store Original Image
+    S3-->>A: Image URL
+    A->>AI: Generate Haircut Styles (OpenAI Vision)
+    AI-->>A: 6 Generated Style Images
+    A->>S3: Store Generated Images
+    A->>DB: Save AI Generation Record
+    DB-->>A: Success
+    A-->>F: Generated Styles Array
+
+    %% Style Selection & Customization
+    U->>F: Select Style + Add Notes
+    F->>A: POST /api/styles/customize
+    A->>AI: Refine Style with User Notes
+    AI-->>A: Refined Style Image
+    A->>S3: Store Refined Image
+    A-->>F: Customized Style
+
+    %% Salon Search & Selection
+    U->>F: Search Salons by Location
+    F->>A: GET /api/salons/search?lat&lng&radius
+    A->>DB: Query Nearby Salons with Ratings
+    DB-->>A: Salon List with Details
+    A-->>F: Filtered Salon Results
+
+    U->>F: Select Salon + View Barbers
+    F->>A: GET /api/salons/:id/barbers
+    A->>DB: Get Available Barbers
+    DB-->>A: Barber List with Schedules
+    A-->>F: Available Barbers
+
+    %% Booking Process
+    U->>F: Select Barber + Choose Time Slot
+    F->>A: POST /api/bookings/create
+    A->>DB: Check Availability
+    DB-->>A: Slot Available
+    A->>DB: Create Booking Record
+    A->>P: Create Payment Session
+    P-->>A: Payment URL
+    A-->>F: Booking Created + Payment Link
+
+    U->>P: Complete Payment
+    P->>A: Webhook - Payment Confirmed
+    A->>DB: Update Booking Status
+    A->>N: Send Confirmation Notifications
+    N->>U: Push Notification (User)
+    N->>Salon: SMS/Email (Salon)
+
+    %% Salon Dashboard - Booking Management
+    Salon->>F: Login to Dashboard
+    F->>A: GET /api/salon/bookings
+    A->>DB: Get Salon Bookings
+    DB-->>A: Booking List with Customer Details
+    A-->>F: Formatted Booking Data
+
+    Salon->>F: View Booking Details
+    F->>A: GET /api/bookings/:id
+    A->>DB: Get Full Booking Details
+    A->>S3: Get Style Images
+    S3-->>A: Image URLs
+    DB-->>A: Booking + Customer + Style Data
+    A-->>F: Complete Booking Information
+
+    %% Service Completion & Review
+    Salon->>F: Mark Service Complete
+    F->>A: PATCH /api/bookings/:id/complete
+    A->>DB: Update Booking Status
+    A->>N: Send Completion Notification
+    N->>U: Request Review Notification
+    A-->>F: Success
+
+    U->>F: Submit Review
+    F->>A: POST /api/reviews/create
+    A->>DB: Save Review
+    A->>DB: Update Salon/Barber Rating
+    DB-->>A: Success
+    A-->>F: Review Saved
+
+    %% Admin Dashboard
+    Admin->>F: Access Admin Panel
+    F->>A: GET /api/admin/dashboard
+    A->>DB: Get Platform Statistics
+    DB-->>A: Analytics Data
+    A-->>F: Dashboard Metrics
+
+    Admin->>F: Handle Support Ticket
+    F->>A: PATCH /api/support/:id
+    A->>DB: Update Ticket Status
+    A->>N: Notify User of Update
+    DB-->>A: Success
+    A-->>F: Ticket Updated

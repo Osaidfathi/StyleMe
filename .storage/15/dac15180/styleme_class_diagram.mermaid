@@ -1,0 +1,183 @@
+classDiagram
+    class User {
+        +String id
+        +String email
+        +String phone
+        +String name
+        +String avatar
+        +Gender gender
+        +String preferredLanguage
+        +DateTime createdAt
+        +DateTime updatedAt
+        +createProfile(data: UserProfile) User
+        +updateLanguage(lang: String) User
+        +getBookings() Booking[]
+    }
+
+    class Salon {
+        +String id
+        +String name_ar
+        +String name_en
+        +String description_ar
+        +String description_en
+        +String address
+        +Float latitude
+        +Float longitude
+        +String phone
+        +String email
+        +Float rating
+        +Integer reviewCount
+        +SalonStatus status
+        +String ownerId
+        +DateTime createdAt
+        +DateTime updatedAt
+        +addBarber(barber: Barber) Barbar
+        +updateLocation(lat: Float, lng: Float) Salon
+        +getAvailableSlots(date: Date) TimeSlot[]
+        +calculateRating() Float
+    }
+
+    class Barber {
+        +String id
+        +String name
+        +String specialties[]
+        +String salonId
+        +Float rating
+        +String bio_ar
+        +String bio_en
+        +BarberStatus status
+        +DateTime createdAt
+        +DateTime updatedAt
+        +getAvailableSlots(date: Date) TimeSlot[]
+        +updateSchedule(schedule: Schedule) Barber
+        +getBookings(dateRange: DateRange) Booking[]
+    }
+
+    class Booking {
+        +String id
+        +String userId
+        +String salonId
+        +String barberId
+        +DateTime appointmentTime
+        +BookingStatus status
+        +String originalImageUrl
+        +String selectedStyleImageUrl
+        +String customerNotes_ar
+        +String customerNotes_en
+        +String barberInstructions_ar
+        +String barberInstructions_en
+        +Float price
+        +DateTime createdAt
+        +DateTime updatedAt
+        +confirmBooking() Booking
+        +cancelBooking(reason: String) Booking
+        +completeService() Booking
+        +addNotes(notes: String, lang: String) Booking
+    }
+
+    class AIStyleGeneration {
+        +String id
+        +String userId
+        +String originalImageUrl
+        +String[] generatedStyles
+        +Gender targetGender
+        +String preferences
+        +DateTime createdAt
+        +generateStyles(image: File, gender: Gender) String[]
+        +refineStyle(styleId: String, notes: String) String
+        +saveUserPreference(userId: String, styleType: String) void
+    }
+
+    class Review {
+        +String id
+        +String userId
+        +String salonId
+        +String barberId
+        +String bookingId
+        +Integer rating
+        +String comment_ar
+        +String comment_en
+        +DateTime createdAt
+        +DateTime updatedAt
+        +updateReview(rating: Integer, comment: String) Review
+        +deleteReview() Boolean
+    }
+
+    class SupportTicket {
+        +String id
+        +String userId
+        +String salonId
+        +TicketType type
+        +TicketPriority priority
+        +TicketStatus status
+        +String subject_ar
+        +String subject_en
+        +String description_ar
+        +String description_en
+        +String assignedAgentId
+        +DateTime createdAt
+        +DateTime updatedAt
+        +assignAgent(agentId: String) SupportTicket
+        +updateStatus(status: TicketStatus) SupportTicket
+        +addMessage(message: String, sender: String) SupportMessage
+    }
+
+    class Admin {
+        +String id
+        +String email
+        +String name
+        +AdminRole role
+        +String[] permissions
+        +DateTime createdAt
+        +DateTime updatedAt
+        +manageSalons() Salon[]
+        +generateReports(dateRange: DateRange) Report
+        +handleSupport(ticketId: String) SupportTicket
+    }
+
+    class Payment {
+        +String id
+        +String bookingId
+        +String userId
+        +Float amount
+        +String currency
+        +PaymentStatus status
+        +String stripeSessionId
+        +DateTime createdAt
+        +DateTime updatedAt
+        +processPayment(amount: Float) PaymentResult
+        +refundPayment(reason: String) PaymentResult
+    }
+
+    class Notification {
+        +String id
+        +String userId
+        +NotificationType type
+        +String title_ar
+        +String title_en
+        +String message_ar
+        +String message_en
+        +Boolean isRead
+        +DateTime createdAt
+        +markAsRead() Notification
+        +sendPushNotification() Boolean
+    }
+
+    %% Relationships
+    User ||--o{ Booking : creates
+    User ||--o{ Review : writes
+    User ||--o{ SupportTicket : submits
+    User ||--o{ AIStyleGeneration : generates
+    
+    Salon ||--o{ Barber : employs
+    Salon ||--o{ Booking : receives
+    Salon ||--o{ Review : receives
+    
+    Barber ||--o{ Booking : serves
+    Barber ||--o{ Review : receives
+    
+    Booking ||--|| Payment : requires
+    Booking ||--o| Review : generates
+    
+    Admin ||--o{ SupportTicket : handles
+    Admin ||--o{ Salon : manages
