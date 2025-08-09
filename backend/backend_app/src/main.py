@@ -1,5 +1,9 @@
 import os
 import sys
+
+# إصلاح مسار المشروع قبل أي استيراد من src
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+
 from flask import Flask, send_from_directory
 from flask_cors import CORS
 from src.models.user import db
@@ -11,15 +15,17 @@ from src.routes.admin_dashboard import admin_dashboard_bp
 from src.routes.admin_ui_routes import admin_ui_bp
 from src.routes.salon_routes import salon_routes_bp
 
-# إصلاح مسار المشروع
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+# تهيئة التطبيق مع مسار ملفات الواجهة الأمامية
+app = Flask(
+    __name__,
+    static_folder=os.path.join(os.path.dirname(__file__), "../../workspace/shadcn-ui/dist"),
+    static_url_path="/"
+)
 
-# تهيئة التطبيق
-app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'change-this-secret')
 
-# تفعيل CORS
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+# تفعيل CORS لجميع المسارات
+CORS(app)
 
 # تسجيل الـ Blueprints
 app.register_blueprint(user_bp, url_prefix='/api')
@@ -50,12 +56,12 @@ def serve(path):
     if not static_folder_path or not os.path.exists(static_folder_path):
         return "Static folder not configured", 404
 
-    if path and os.path.exists(os.path.join(static_folder_path, path)):
+    full_path = os.path.join(static_folder_path, path)
+    if path and os.path.exists(full_path):
         return send_from_directory(static_folder_path, path)
     elif os.path.exists(os.path.join(static_folder_path, 'index.html')):
         return send_from_directory(static_folder_path, 'index.html')
     else:
         return "index.html not found", 404
 
-# لا نستخدم app.run لأن Vercel يدير الخادم
-# الكائن app سيكون هو نقطة الدخول في Vercel
+# ملاحظة: لا نستخدم app.run() لأن Vercel يتكفل بتشغيل التطبيق
