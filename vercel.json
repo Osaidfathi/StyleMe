@@ -8,8 +8,8 @@
     },
     {
       "src": "workspace/shadcn-ui/package.json",
-      "use": "@vercel/node",
-      "config": { "outputDirectory": "dist" }
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
     }
   ],
   "routes": [
@@ -23,4 +23,3 @@
     }
   ]
 }
-
