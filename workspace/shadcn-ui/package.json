@@ -7,7 +7,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint --quiet ./src",
-    "vercel-build": "vite build"
+    "vercel-build": "pnpm install && vite build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
